@@ -1,18 +1,21 @@
-# Escolher a imagem base com Python
+# Base Image
 FROM python:3.9-slim
 
-# Definir o diretório de trabalho
+# Set working directory
 WORKDIR /app
 
-# Copiar os arquivos de requirements.txt e instalá-los
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements.txt
+COPY requirements.txt .
 
-# Copiar o código da aplicação Flask para o container
-COPY . /app/
+# Install dependencies
+RUN pip install --upgrade pip --no-cache-dir -r requirements.txt
 
-# Expor a porta que o Flask vai escutar
-EXPOSE 5000
+# Copy application code
+COPY . .
 
-# Comando para rodar a aplicação Flask
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app", "--workers", "4", "--worker-class", "gevent"]
+# Expose port
+EXPOSE 5001
+
+# Run the application
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5001"]
+
